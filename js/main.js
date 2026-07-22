@@ -2,6 +2,13 @@
  * Brand Builder — Main interactions
  * Mobile nav, hero converter, blog filter, subscribe, scroll reveal
  */
+
+/* Arm the scroll-reveal start state only when JS is available.
+   Runs at parse time (before DOMContentLoaded) to avoid a flash of
+   already-visible content. Without JS the .js class never lands and
+   everything stays visible. */
+document.documentElement.classList.add("js");
+
 document.addEventListener("DOMContentLoaded", function () {
   "use strict";
 
@@ -107,7 +114,28 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ── Scroll reveal ──────────────────────────────────────────────────────
-  document.querySelectorAll(".reveal").forEach(function (el) {
-    el.classList.add("in");
-  });
+  var revealEls = document.querySelectorAll(".reveal");
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduced || !("IntersectionObserver" in window)) {
+    // Show everything immediately — no animation
+    revealEls.forEach(function (el) { el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        // Stagger siblings inside the same grid/row for a smoother cascade
+        var sibs = Array.prototype.slice.call(el.parentNode.children).filter(function (n) {
+          return n.classList && n.classList.contains("reveal");
+        });
+        var i = Math.min(sibs.indexOf(el), 5);
+        el.style.transitionDelay = (i > 0 ? i * 70 : 0) + "ms";
+        el.classList.add("in");
+        obs.unobserve(el);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+
+    revealEls.forEach(function (el) { io.observe(el); });
+  }
 });
