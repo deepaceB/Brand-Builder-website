@@ -190,7 +190,8 @@ p{margin:0;}
 /* Product cards */
 .prod{display:flex;flex-direction:column;}
 .prod__top{display:flex;align-items:center;gap:.85rem;margin-bottom:.95rem;}
-.prod__logo{width:44px;height:44px;border-radius:var(--r-md);display:grid;place-items:center;flex:0 0 auto;background:var(--navy);color:#fff;font-family:Poppins,sans-serif;font-weight:700;font-size:1.1rem;}
+.prod__logo{width:44px;height:44px;border-radius:var(--r-md);display:grid;place-items:center;flex:0 0 auto;background:var(--navy);color:#fff;font-family:Poppins,sans-serif;font-weight:700;font-size:1.1rem;overflow:hidden;}
+.prod__logo img{width:100%;height:100%;object-fit:cover;}
 .prod h3{font-size:1.25rem;margin:0;}
 .prod p{font-size:.9688rem;flex:1;}
 .prod__link{display:inline-flex;align-items:center;gap:.4rem;margin-top:1.1rem;font-weight:600;font-size:.9375rem;color:var(--navy);width:max-content;}
